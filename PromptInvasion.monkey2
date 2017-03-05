@@ -712,7 +712,7 @@ Class HitBox
 End Class
 
 
-Class Entity Extends List<Entity>.Node
+Class Entity
 	Field parent:PVector2D
 	Field mainv:PVector2D
 	Field pos:PVector2D
@@ -1987,10 +1987,6 @@ Class Bullet Extends Entity
 		
 	End Method
 	
-	Method NextBullet:Bullet()
-		Return Cast<Bullet>(Succ.Value)
-	End Method
-	
 	Method UnRegister:Void() Override
 	
 	End Method
@@ -2053,9 +2049,6 @@ Class Explosion Extends Entity
 		Self.startTime = currentTime
 	End Method
 	
-	Method NextExplosion:Explosion()
-		Return Cast<Explosion>(Succ.Value)
-	End method
 		
 	Method Update:Void() Override
 		If startTime+delay < currentTime
@@ -2191,9 +2184,6 @@ Class Particle Extends Entity
 		Return alpha <= 0
 	End Method
 	
-	Method NextParticle:Particle()
-		Return Cast<Particle>(Succ.Value)
-	End Method
 	
 	Method Update:Void() Override
 		angle += angleRot
