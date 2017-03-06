@@ -107,7 +107,6 @@ Class Game Extends Window
 		stars.Render(canvas)
 		activeStage.Render(canvas)
 		canvas.DrawImage(media.trailImg[0],50,50)
-		RenderText(canvas,playerBulletList.Count(),10,50)
 	End
 	
 End
@@ -293,6 +292,7 @@ Class GalVadors Extends StageBase
 
 		score = 0
 		Level = 0
+		
 	End Method
 	
 	Method Update:Void() Override
@@ -680,7 +680,7 @@ Class ScoreKeeper
 	Field total:Int
 End Class
 
-'*******************************************************************************
+'**********************************************************************
 Class HitBox
 	Field min:PVector2D
 	Field max:PVector2D
@@ -821,11 +821,12 @@ Class Player Extends Entity
 		bulletImg = media.bulletImg 
 		trailImg = media.trailImg
 		delay = 500
-		decrementRate = 300
+		decrementRate = 400
 		startTime = currentTime
 		minx = image[0].Handle.X
-		maxx =  DeviceWidth -(image[0].Width - image[0].Handle.X)
-		hitBox = New HitBox(6-image[0].Handle.X,4-image[0].Handle.Y, image[0].Width - image[0].Handle.X-6, image[0].Height - image[0].Handle.Y)
+		Local img:Image = image[0]
+		maxx =  DeviceWidth -(img.Width/2)
+		hitBox = New HitBox(6-img.Width/2,4-img.Height/2, img.Width/2 -6, img.Height/2)
 		minx = image[0].Handle.X
 		pos.Set(DeviceWidth / 2,DeviceHeight - 40)
 		lifes = 3
@@ -868,8 +869,8 @@ Class Player Extends Entity
 					If Keyboard.KeyDown(Key.Z)
 						Local b:Bullet = bulletStore.GetItem()
 						b.Init(bulletImg,trailImg,pos.x,pos.y-12,0,-1,10)
-						
-						b.SetHitBox(-bulletImg[0].Handle.X,-bulletImg[0].Handle.Y,bulletImg[0].Width - bulletImg[0].Handle.X,bulletImg[0].Height - bulletImg[0].Handle.Y)
+						Local bImg:Image = bulletImg[0]
+						b.SetHitBox(-bImg.Width/2,-bImg.Height/2,bImg.Width/2,bImg.Height/2)
 						playerBulletList.AddLast(b)
 						startTime = currentTime
 						media.ShootSnd1()
@@ -917,7 +918,7 @@ Class Player Extends Entity
 		For Local i:Int = 0 Until lifes
 			canvas.DrawImage(image[1],370+i*28,30)
 		Next
-		'hitBox.Render(pos.x,pos.y)
+		'hitBox.Render(canvas,pos.x,pos.y)
 	End Method
 	
 End Class
@@ -927,7 +928,6 @@ Class Gripper Extends Entity
 
 	Method New()
 		image = media.gripperImg
-		'image.SetHandle(12,12)
 		pos.Set(100, 50)
 		SetHitBox(-image[0].Handle.X,-image[0].Handle.Y,image[0].Width-image[0].Handle.X,image[0].Height - image[0].Handle.Y)
 		startTime = currentTime
@@ -1000,8 +1000,8 @@ Class Tesla Extends Entity
 		image = media.teslaImg
 		trailImg = media.trailImg
 		bulletImg = media.bulletImg
-
-		SetHitBox(-image[0].Handle.X,-image[0].Handle.Y,image[0].Width-image[0].Handle.X,image[0].Height - image[0].Handle.Y)
+		Local img:Image = image[0]
+		SetHitBox(-img.Width/2,-img.Height/2,img.Width/2,img.Height/2)
 		pos.Set(50,50)
 		startTime = currentTime
 		frameDelay = attackRate
@@ -1129,8 +1129,8 @@ Class Boxed Extends Entity
 		image = media.boxedImg
 		laserImg = media.lazerImg
 		gunImg = media.gunbImg 
-
-		SetHitBox(-image[0].Handle.X,-image[0].Handle.Y,image[0].Width-image[0].Handle.X,image[0].Height - image[0].Handle.Y)
+		Local img := image[0]
+		SetHitBox(-img.Width/2,-img.Height/2,img.Width/2,img.Height/2)
 		state = IN_FORMATION
 		attackDelay = attackRate
 		attackTime = currentTime + firstAttackTime
@@ -1228,16 +1228,7 @@ Class Boxed Extends Entity
 		Endif
 		shake = (shake - (3.0*ATR)) Mod TwoPi
 	End Method
-	
-'	Method lazerCollided:Int(p:Player)
-'		If state = SWEEPING
-'			lazer.pos.x = posx '**************************************************************************************
-'			lazer.pos.y = posy '**************************************************************************************
-'			Return lazer.collided(p)
-'		Endif
-'		Return False
-'	End Method
-	
+		
 	Method UnRegister:Void() Override
 		If state <> IN_FORMATION
 			divingCount -= 1
@@ -1254,6 +1245,7 @@ Class Boxed Extends Entity
 				canvas.DrawImage(laserImg,pos.x,pos.y,0,1,100)
 			Endif
 		Endif
+		'hitBox.Render(canvas,parent.x,parent.y)
 	End Method
 
 
@@ -1293,7 +1285,8 @@ Class Micron Extends Entity
 		image = media.micronImg
 		bulletImg = media.bulletImg
 		trailImg  = media.trailImg
-		SetHitBox(-image[0].Handle.X,-image[0].Handle.Y,image[0].Width-image[0].Handle.X,image[0].Height - image[0].Handle.Y)
+		Local img := image[0]
+		SetHitBox(-img.Width/2,-img.Height/2,img.Width/2,img.Height/2)
 		pos.Set(50, 100)
 		startTime = currentTime
 		frameDelay = 100
@@ -1503,8 +1496,8 @@ Class Micron Extends Entity
 			Default
 				canvas.DrawImage(image[2],pos.x,pos.y,-angle-90,1.3,1.3)
 		End Select
+		'hitBox.Render(canvas,parent.x,parent.y)
 	End Method
-
 End Class
 
 Class Ufo Extends Entity
@@ -1535,8 +1528,8 @@ Class Ufo Extends Entity
 		Self.specialImg[Special.HEART] = media.heartImg
 		Self.specialImg[Special.GUN] = media.gunImg
 		Self.specialImg[Special.SHIELD] = media.shieldImg
-
-		SetHitBox(-image[0].Handle.X+2,-image[0].Handle.Y+4,image[0].Width-(image[0].Handle.X+4),image[0].Height-(image[0].Handle.Y))
+		Local img:Image = image[0]
+		SetHitBox(-img.Width/2,-img.Height/2+2,img.Width/2,img.Height/2-2)
 		pos = New PVector2D(x,y)
 		speed = 1.5
 		dir = 1
@@ -1627,7 +1620,7 @@ Class Ufo Extends Entity
 	Method Render:Void(canvas:Canvas) Override
 		If active = True
 			canvas.DrawImage(image[frame],pos.x,pos.y)
-			'hitBox.Render(pos.x,pos.y)
+			'hitBox.Render(canvas,pos.x,pos.y)
 		Endif
 	End Method
 End Class
@@ -1741,6 +1734,7 @@ Class Wave Extends Level
 		cx = 330 
 		cy = 50
 		state = MOVING
+		Print lvl
 		Select lvl 
 			Case 0
 				For Local i:Int =  0 Until columns
@@ -1993,7 +1987,7 @@ Class Bullet Extends Entity
 	
 	Method Render:Void(canvas:Canvas) Override
 		canvas.DrawImage(image[0],pos.x,pos.y,0,1.5,1.5)
-		'hitBox.Render(pos.x,pos.y)
+		'hitBox.Render(canvas,pos.x,pos.y)
 	End Method
 
 End Class
@@ -2307,8 +2301,8 @@ Class Media
 		
 		teslaImg = New Image[2]
 		For Local i:Int =  0 Until 2
-			teslaImg[0] = New Image(atlas,48+24+i,0,24,24)
-			teslaImg[0].Handle = New Vec2f(.5,.5)
+			teslaImg[i] = New Image(atlas,48+24*i,0,24,24)
+			teslaImg[i].Handle = New Vec2f(.5,.5)
 		Next
 		
 		bulletImg = New Image[1]
@@ -2406,7 +2400,7 @@ Class Media
 	End Method
 			
 	Method PlayTune:Void()
-		channel[8].Play(music)
+		channel[8].Play(music,True)
 	End Method
 	
 	Method StopMusic()
