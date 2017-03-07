@@ -4,15 +4,15 @@
 #Import "vector"
 
 #Import "data/aliens.png"
-#Import "asset::background.png"
+'#Import "asset::background.png"
 
 #Import "data/chalky.fnt"
 #Import "data/chalky.png"
 
 #Import "data/shoota.ogg"
-#Import "data/hita.mp3"
+#Import "data/hita.ogg"
 #Import "data/fireball.ogg"
-#Import "data/hit.mp3"
+#Import "data/hit.ogg"
 #Import "data/explosion.ogg"
 #Import "data/bomb0.ogg"
 #Import "data/laser.ogg"
@@ -132,7 +132,7 @@ Class Intro Extends StageBase
 	
 	Method Init:Void()
 		startTime = currentTime
-		delayAmount = 3000
+		delayAmount = 2000
 	End Method
 	
 	Method Update:Void() override
@@ -1625,7 +1625,7 @@ Class Ufo Extends Entity
 	End Method
 End Class
 
-Class Special Extends List<Special>.Node
+Class Special
 	Field pos:PVector2D
 	Field D:PVector2D
 	Field speed:Float
@@ -1642,9 +1642,6 @@ Class Special Extends List<Special>.Node
 	
 	Global hitBox:HitBox = New HitBox
 	
-	Method New()
-		
-	End Method
 	
 	Method New(x:Float,y:Float,speed:Float,type:Float)
 		Self.image = media.specialImg[type]
@@ -2226,7 +2223,7 @@ Class Media
 	Field specialImg:Image[]
 	Field starsImg:Image[]
 	Field alienImg:Image
-	Field backGroundImg:Image
+'	Field backGroundImg:Image
 	Field trailImg:Image[]
 	Field shipExplosionImg:Image[]
 	Field explosionImg:Image[]
@@ -2251,7 +2248,7 @@ Class Media
 
 	Method New()
 		atlas = Image.Load("asset::aliens.png")
-		backGroundImg = Image.Load("asset::background.png")
+'		backGroundImg = Image.Load("asset::background.png")
 		LoadImages()
 		LoadSounds()
 		channelIndex = 0	
@@ -2448,7 +2445,7 @@ Class Meteor Extends Entity
 	
 End Class
 
-Class ParticleA Extends List<ParticleA>.Node
+Class ParticleA
 	Field pos:PVector2D
 	Field V:PVector2D
 	Field D:PVector2D
@@ -2486,13 +2483,6 @@ Class ParticleA Extends List<ParticleA>.Node
 		Return Self
 	End Method
 	
-	Method GetNext:ParticleA()
-		Return  Succ.Value
-	End Method
-	
-	Method Previous:ParticleA()
-		Return Pred.Value
-	End Method
 		
 	Method Update:Bool()
 		Local done:Bool = False
