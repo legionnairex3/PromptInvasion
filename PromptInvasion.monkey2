@@ -30,7 +30,7 @@ Function Main()
 	App.Run()
 End
 
-Const  ATR := Pi/180.0
+Const  ATR := 3.14159265/180.0
 Global currentTime:Int
 
 Global activeStage:StageBase
